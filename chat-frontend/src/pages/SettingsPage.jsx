@@ -71,7 +71,7 @@ const SettingsPage = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 pt-20">
       <div className="max-w-2xl mx-auto px-4">
         <div className="card p-8 space-y-8 bg-white dark:bg-gray-800 dark:text-gray-100">
           {/* Header */}
