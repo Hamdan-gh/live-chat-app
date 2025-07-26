@@ -24,8 +24,8 @@ const Sidebar = () => {
   return (
     <aside className="w-72 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col h-full">
       {/* Header */}
-      <div className="border-b border-gray-200 p-5">
-        <div className="flex items-center gap-2">
+      <div className="mt-30 border-b border-gray-200 p-5 ">
+        <div className="flex items-center gap-2 ">
           <Users className="w-6 h-6 text-gray-600" />
           <span className="font-semibold text-gray-900 hidden lg:block">Conversations</span>
         </div>
@@ -62,7 +62,7 @@ const Sidebar = () => {
       </div>
 
       {/* Users List */}
-      <div className="overflow-y-auto flex-1 py-3">
+      <div className="overflow-y-auto flex-1 py-3 custom-scrollbar">
         {filteredUsers.map((user) => (
           <button
             key={user._id}

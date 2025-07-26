@@ -3,7 +3,6 @@ import { useAuthStore } from '../Store/useAuthStore';
 import { useThemeStore } from '../Store/useThemeStore';
 import {
   Bell,
-  Globe,
   Lock,
   Moon,
   Palette,
@@ -14,7 +13,7 @@ import {
 } from 'lucide-react';
 
 const SettingsPage = () => {
-  const { authUser, logout } = useAuthStore();
+  const { logout } = useAuthStore();
   const { theme, setTheme, initializeTheme } = useThemeStore();
   const [settings, setSettings] = useState({
     theme: theme,
