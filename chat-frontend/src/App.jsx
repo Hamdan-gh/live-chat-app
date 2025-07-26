@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useEffect } from 'react';
-import { useAuthStore } from './store/useAuthStore';
+import { useAuthStore } from './Store/useAuthStore';
+import { useThemeStore } from './Store/useThemeStore';
 import LoginPage from './pages/LoginPage';
 import SignUpPage from './pages/SignUpPage';
 import ProfilePage from './pages/ProfilePage';
@@ -8,13 +9,19 @@ import SettingsPage from './pages/SettingsPage';
 import HomePage from './pages/HomePage';
 import Navbar from './components/layout/Navbar';
 import LoadingSpinner from './components/LoadingSpinner';
+import { Toaster } from 'react-hot-toast';
 
 const App = () => {
   const { authUser, isCheckingAuth, checkAuth } = useAuthStore();
+  const { initializeTheme } = useThemeStore();
 
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
+
+  useEffect(() => {
+    initializeTheme();
+  }, [initializeTheme]);
 
   if (isCheckingAuth) {
     return <LoadingSpinner />;
@@ -22,6 +29,7 @@ const App = () => {
 
   return (
     <div>
+      <Toaster position="top-right" reverseOrder={false} />
       {authUser && <Navbar />}
       <Routes>
         <Route

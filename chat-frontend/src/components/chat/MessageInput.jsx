@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { useChatStore } from '../../store/useChatStore';
+import { useChatStore } from '../../Store/useChatStore';
 import { Image, Send, Smile, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -69,7 +69,7 @@ const MessageInput = () => {
         </div>
       )}
 
-      <form onSubmit={handleSendMessage} className="flex items-center gap-2">
+      <form onSubmit={handleSendMessage} className="flex items-center gap-2 p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
         {/* File Upload */}
         <input
           type="file"

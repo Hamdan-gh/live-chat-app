@@ -20,7 +20,7 @@ export const useAuthStore = create((set) => ({
   checkAuth: async () => {
     try {
       const res = await api.get('/auth/check');
-      set({ authUser: res.data });
+      set({ authUser: res.data.user });
     } catch (error) {
       console.log('Error in checkAuth:', error);
       set({ authUser: null });
@@ -33,7 +33,7 @@ export const useAuthStore = create((set) => ({
     set({ isSigningUp: true });
     try {
       const res = await api.post('/auth/signup', data);
-      set({ authUser: res.data });
+      set({ authUser: res.data.user });
       toast.success('Account created successfully');
     } catch (error) {
       toast.error(error.response?.data?.message || 'Signup failed');
@@ -46,7 +46,7 @@ export const useAuthStore = create((set) => ({
     set({ isLoggingIn: true });
     try {
       const res = await api.post('/auth/login', data);
-      set({ authUser: res.data });
+      set({ authUser: res.data.user });
       toast.success('Logged in successfully');
     } catch (error) {
       toast.error(error.response?.data?.message || 'Login failed');
@@ -66,20 +66,24 @@ export const useAuthStore = create((set) => ({
   },
 
   updateProfile: async (data) => {
-    set({ isUpdatingProfile: true });
-    try {
-      const res = await api.put('/auth/update-profile', data);
-      set({ authUser: res.data });
-      toast.success('Profile updated successfully');
-    } catch (error) {
-      console.log('Error in updateProfile:', error);
-      toast.error(error.response?.data?.message || 'Profile update failed');
-    } finally {
-      set({ isUpdatingProfile: false });
-    }
+  set({ isUpdatingProfile: true });
+  try {
+    console.log("➡️ SENDING TO BACKEND:", data);
+
+    const res = await api.put('/auth/profile', data);
+    console.log("✅ BACKEND RESPONSE:", res.data);
+    console.log("✅ USER DATA:", res.data.user);
+    
+    // Update the authUser with the returned user data
+    set({ authUser: res.data.user });
+    console.log("✅ AUTH USER UPDATED:", res.data.user);
+    toast.success('Profile updated successfully');
+  } catch (error) {
+    console.error("🛑 BACKEND RESPONSE:", error.response?.data || error);
+    toast.error(error.response?.data?.message || 'Profile update failed');
+  } finally {
+    set({ isUpdatingProfile: false });
+  }
   },
 
-  setOnlineUsers: (users) => {
-    set({ onlineUsers: users });
-  },
 }));

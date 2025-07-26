@@ -19,6 +19,8 @@ router.get('/sign-out', auth, SignOut);
 
 router.get('/check', auth, checkAuth);
 
+
+
 // Sign-up route - POST /api/auth/signup
 router.post('/signup', async (req, res) => {
   try {
@@ -225,7 +227,7 @@ router.put('/profile', auth, async (req, res) => {
     if (relationshipStatus) updateData.relationshipStatus = relationshipStatus;
     if (bio) updateData.bio = bio;
     if (location) updateData.location = location;
-    if (dateOfBirth) updateData.dateOfBirth = dateOfBirth;
+    if (dateOfBirth) updateData.dateOfBirth = new Date(dateOfBirth);
 
     // Check if username or email is being changed to one that already exists
     if (username || email) {
@@ -256,6 +258,8 @@ router.put('/profile', auth, async (req, res) => {
         runValidators: true  // Run schema validations
       }
     ).select('-password');  // Don't return password
+    
+    console.log('Updated user:', updatedUser);
     
     res.status(200).json({
       success: true,

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { useChatStore } from '../../store/useChatStore';
-import { useAuthStore } from '../../store/useAuthStore';
+import { useChatStore } from '../../Store/useChatStore';
+import { useAuthStore } from '../../Store/useAuthStore';
 import { Users, Search } from 'lucide-react';
 
 const Sidebar = () => {
@@ -22,7 +22,7 @@ const Sidebar = () => {
   if (isUsersLoading) return <SidebarSkeleton />;
 
   return (
-    <aside className="h-full w-20 lg:w-80 border-r border-gray-200 flex flex-col transition-all duration-200">
+    <aside className="w-72 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col h-full">
       {/* Header */}
       <div className="border-b border-gray-200 p-5">
         <div className="flex items-center gap-2">

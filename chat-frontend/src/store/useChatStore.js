@@ -19,7 +19,7 @@ export const useChatStore = create((set, get) => ({
   getUsers: async () => {
     set({ isUsersLoading: true });
     try {
-      const res = await api.get('/messages/conversations');
+      const res = await api.get('/auth/messages/conversations');
       set({ users: res.data.data });
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to load users');
@@ -31,7 +31,7 @@ export const useChatStore = create((set, get) => ({
   getMessages: async (userId) => {
     set({ isMessagesLoading: true });
     try {
-      const res = await api.get(`/messages/${userId}`);
+      const res = await api.get(`/auth/messages/${userId}`);
       set({ messages: res.data.data.messages });
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to load messages');
@@ -43,7 +43,7 @@ export const useChatStore = create((set, get) => ({
   sendMessage: async (messageData) => {
     const { selectedUser, messages } = get();
     try {
-      const res = await api.post('/messages/send', {
+      const res = await api.post('/auth/messages/send', {
         ...messageData,
         receiverId: selectedUser._id,
       });

@@ -1,5 +1,6 @@
-import { useState } from 'react';
-import { useAuthStore } from '../store/useAuthStore';
+import { useState, useEffect } from 'react';
+import { useAuthStore } from '../Store/useAuthStore';
+import { useThemeStore } from '../Store/useThemeStore';
 import {
   Bell,
   Globe,
@@ -14,8 +15,9 @@ import {
 
 const SettingsPage = () => {
   const { authUser, logout } = useAuthStore();
+  const { theme, setTheme, initializeTheme } = useThemeStore();
   const [settings, setSettings] = useState({
-    theme: 'light',
+    theme: theme,
     notifications: true,
     soundEnabled: true,
     language: 'en',
@@ -23,19 +25,30 @@ const SettingsPage = () => {
     showOnlineStatus: true,
   });
 
+  useEffect(() => {
+    setSettings((prev) => ({ ...prev, theme }));
+  }, [theme]);
+
+  useEffect(() => {
+    initializeTheme();
+  }, [initializeTheme]);
+
   const handleSettingChange = (key, value) => {
     setSettings((prev) => ({ ...prev, [key]: value }));
+    if (key === 'theme') {
+      setTheme(value);
+    }
   };
 
   const SettingItem = ({ icon: Icon, title, description, children }) => (
-    <div className="flex items-center justify-between py-4 border-b border-gray-200 last:border-b-0">
+    <div className="flex items-center justify-between py-4 border-b border-gray-200 dark:border-gray-700 last:border-b-0">
       <div className="flex items-center gap-3">
-        <div className="p-2 bg-gray-100 rounded-lg">
-          <Icon className="w-5 h-5 text-gray-600" />
+        <div className="p-2 bg-gray-100 dark:bg-gray-700 rounded-lg">
+          <Icon className="w-5 h-5 text-gray-600 dark:text-gray-300" />
         </div>
         <div>
-          <h3 className="font-medium text-gray-900">{title}</h3>
-          <p className="text-sm text-gray-500">{description}</p>
+          <h3 className="font-medium text-gray-900 dark:text-gray-100">{title}</h3>
+          <p className="text-sm text-gray-500 dark:text-gray-300">{description}</p>
         </div>
       </div>
       {children}
@@ -58,18 +71,18 @@ const SettingsPage = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
       <div className="max-w-2xl mx-auto px-4">
-        <div className="card p-8 space-y-8">
+        <div className="card p-8 space-y-8 bg-white dark:bg-gray-800 dark:text-gray-100">
           {/* Header */}
           <div className="text-center">
-            <h1 className="text-3xl font-bold text-gray-900">Settings</h1>
-            <p className="mt-2 text-gray-600">Manage your app preferences</p>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Settings</h1>
+            <p className="mt-2 text-gray-600 dark:text-gray-300">Manage your app preferences</p>
           </div>
 
           {/* Appearance */}
           <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-gray-900">Appearance</h2>
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Appearance</h2>
 
             <SettingItem
               icon={settings.theme === 'light' ? Sun : Moon}
@@ -79,7 +92,7 @@ const SettingsPage = () => {
               <select
                 value={settings.theme}
                 onChange={(e) => handleSettingChange('theme', e.target.value)}
-                className="input w-32"
+                className="input w-32 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-700"
               >
                 <option value="light">Light</option>
                 <option value="dark">Dark</option>
@@ -95,7 +108,7 @@ const SettingsPage = () => {
               <select
                 value={settings.language}
                 onChange={(e) => handleSettingChange('language', e.target.value)}
-                className="input w-32"
+                className="input w-32 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-700"
               >
                 <option value="en">English</option>
                 <option value="es">Spanish</option>
@@ -107,7 +120,7 @@ const SettingsPage = () => {
 
           {/* Notifications */}
           <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-gray-900">Notifications</h2>
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Notifications</h2>
 
             <SettingItem
               icon={Bell}
@@ -134,7 +147,7 @@ const SettingsPage = () => {
 
           {/* Privacy */}
           <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-gray-900">Privacy</h2>
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Privacy</h2>
 
             <SettingItem
               icon={Shield}
@@ -144,7 +157,7 @@ const SettingsPage = () => {
               <select
                 value={settings.privacy}
                 onChange={(e) => handleSettingChange('privacy', e.target.value)}
-                className="input w-32"
+                className="input w-32 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-700"
               >
                 <option value="everyone">Everyone</option>
                 <option value="friends">Friends Only</option>
@@ -166,7 +179,7 @@ const SettingsPage = () => {
 
           {/* Account Actions */}
           <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-gray-900">Account</h2>
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Account</h2>
             <SettingItem
               icon={Lock}
               title="Sign Out"
@@ -187,3 +200,10 @@ const SettingsPage = () => {
 };
 
 export default SettingsPage;
+
+/* Add this to your global CSS (e.g., index.css or App.css):
+.force-light, .force-light * {
+  background-color: #f9fafb !important;
+  color: #111827 !important;
+}
+*/

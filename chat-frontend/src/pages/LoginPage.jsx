@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useAuthStore } from '../store/useAuthStore';
+import { useAuthStore } from '../Store/useAuthStore';
 import AuthSkeleton from '../components/auth/AuthSkeleton';
 import { Link } from 'react-router-dom';
 import { Eye, EyeOff, Loader2, Lock, Mail, MessageSquare } from 'lucide-react';
@@ -18,7 +18,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen grid lg:grid-cols-2">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
       {/* Left Side - Form */}
       <div className="flex flex-col justify-center items-center p-6 sm:p-12">
         <div className="w-full max-w-md space-y-8">

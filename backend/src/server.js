@@ -15,7 +15,8 @@ dotenv.config();
 const app = express();
 
 // Middleware
-app.use(express.json());
+app.use(express.json({ limit: '5mb' }));
+app.use(express.urlencoded({ limit: '5mb', extended: true }));
 app.use(cookieParser());
 
 // ✅ Updated CORS configuration

@@ -49,7 +49,13 @@ export const signUp = async (req, res) => {
         id: newUser._id,
         username: newUser.username,
         email: newUser.email,
-        avatar: newUser.avatar
+        avatar: newUser.avatar,
+        isOnline: newUser.isOnline,
+        city: newUser.city,
+        relationshipStatus: newUser.relationshipStatus,
+        bio: newUser.bio,
+        location: newUser.location,
+        dateOfBirth: newUser.dateOfBirth
       }
     });
   } catch (error) {
@@ -108,6 +114,11 @@ export const signIn = async (req, res) => {
         email: user.email,
         avatar: user.avatar,
         isOnline: user.isOnline,
+        city: user.city,
+        relationshipStatus: user.relationshipStatus,
+        bio: user.bio,
+        location: user.location,
+        dateOfBirth: user.dateOfBirth
       },
     });
   } catch (error) {

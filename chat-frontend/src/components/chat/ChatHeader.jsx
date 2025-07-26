@@ -1,5 +1,5 @@
-import { useChatStore } from '../../store/useChatStore';
-import { useAuthStore } from '../../store/useAuthStore';
+import { useChatStore } from '../../Store/useChatStore';
+import { useAuthStore } from '../../Store/useAuthStore';
 import { X, Phone, Video, MoreVertical } from 'lucide-react';
 
 const ChatHeader = () => {
@@ -7,7 +7,7 @@ const ChatHeader = () => {
   const { onlineUsers } = useAuthStore();
 
   return (
-    <div className="border-b border-gray-200 p-4 flex items-center justify-between bg-white">
+    <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
       <div className="flex items-center gap-3">
         {/* Avatar */}
         <div className="relative">
