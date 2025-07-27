@@ -1,22 +1,37 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useChatStore } from '../../Store/useChatStore';
 import { useAuthStore } from '../../Store/useAuthStore';
 import { Users, Search } from 'lucide-react';
 
 const Sidebar = () => {
-  const { getUsers, users, selectedUser, setSelectedUser, isUsersLoading } = useChatStore();
+  const { getUsers, users, selectedUser, setSelectedUser, isUsersLoading, searchUsers, searchResults } = useChatStore();
   const { onlineUsers } = useAuthStore();
   const [showOnlineOnly, setShowOnlineOnly] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [showDropdown, setShowDropdown] = useState(false);
+  const searchTimeout = useRef(null);
 
   useEffect(() => {
     getUsers();
   }, [getUsers]);
 
+  // Live search effect
+  useEffect(() => {
+    if (searchTimeout.current) clearTimeout(searchTimeout.current);
+    if (searchTerm) {
+      searchTimeout.current = setTimeout(() => {
+        searchUsers(searchTerm);
+        setShowDropdown(true);
+      }, 200);
+    } else {
+      setShowDropdown(false);
+    }
+    return () => clearTimeout(searchTimeout.current);
+  }, [searchTerm, searchUsers]);
+
+  // Only filter by online status for the main list
   const filteredUsers = users.filter((user) => {
-    const matchesSearch = user.username.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesOnlineFilter = showOnlineOnly ? onlineUsers.includes(user._id) : true;
-    return matchesSearch && matchesOnlineFilter;
+    return showOnlineOnly ? onlineUsers.includes(user._id) : true;
   });
 
   if (isUsersLoading) return <SidebarSkeleton />;
@@ -27,11 +42,11 @@ const Sidebar = () => {
       <div className="mt-30 border-b border-gray-200 p-5 ">
         <div className="flex items-center gap-2 ">
           <Users className="w-6 h-6 text-gray-600" />
-          <span className="font-semibold text-gray-900 hidden lg:block">Conversations</span>
+          <span className="font-semibold text-gray-900 dark:text-gray-100 hidden lg:block">Conversations</span>
         </div>
 
         {/* Search */}
-        <div className="mt-4 hidden lg:block">
+        <div className="mt-4 hidden lg:block relative">
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <Search className="h-4 w-4 text-gray-400" />
@@ -39,11 +54,42 @@ const Sidebar = () => {
             <input
               type="text"
               className="input pl-10 text-sm"
-              placeholder="Search contacts..."
+              placeholder="Search users..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
+              onFocus={() => searchTerm && setShowDropdown(true)}
+              onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
             />
           </div>
+          {/* Search Results Dropdown */}
+          {showDropdown && searchTerm && searchResults.length > 0 && (
+            <div className="absolute z-10 left-0 right-0 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded shadow-lg mt-1 max-h-60 overflow-y-auto">
+              {searchResults.map((user) => (
+                <button
+                  key={user._id}
+                  onClick={() => {
+                    setSelectedUser(user);
+                    setSearchTerm('');
+                    setShowDropdown(false);
+                  }}
+                  className="w-full flex items-center gap-3 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                >
+                  <img
+                    src={user.avatar || '/avatar.png'}
+                    alt={user.username}
+                    className="w-8 h-8 object-cover rounded-full"
+                  />
+                  <div className="flex-1 text-left">
+                    <div className="font-medium truncate text-gray-900 dark:text-gray-100">{user.username}</div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400">{user.isOnline ? 'Online' : 'Offline'}</div>
+                  </div>
+                </button>
+              ))}
+              {searchResults.length === 0 && (
+                <div className="px-4 py-2 text-gray-500 dark:text-gray-400">No users found</div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Online Filter */}
@@ -55,9 +101,9 @@ const Sidebar = () => {
               onChange={(e) => setShowOnlineOnly(e.target.checked)}
               className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
             />
-            <span className="text-sm text-gray-600">Show online only</span>
+            <span className="text-sm text-gray-600 dark:text-gray-200">Show online only</span>
           </label>
-          <span className="text-xs text-gray-500">({onlineUsers.length - 1} online)</span>
+          <span className="text-xs text-gray-500 dark:text-gray-400">({onlineUsers.length - 1} online)</span>
         </div>
       </div>
 
@@ -73,7 +119,7 @@ const Sidebar = () => {
           >
             <div className="relative mx-auto lg:mx-0">
               <img
-                src={user.profilePic || '/avatar.png'}
+                src={user.avatar || '/avatar.png'}
                 alt={user.username}
                 className="w-12 h-12 object-cover rounded-full"
               />
@@ -84,8 +130,8 @@ const Sidebar = () => {
 
             {/* User info - only visible on larger screens */}
             <div className="hidden lg:block text-left min-w-0 flex-1">
-              <div className="font-medium truncate text-gray-900">{user.username}</div>
-              <div className="text-sm text-gray-500">
+              <div className="font-medium truncate text-gray-900 dark:text-gray-100">{user.username}</div>
+              <div className="text-sm text-gray-500 dark:text-gray-400">
                 {onlineUsers.includes(user._id) ? 'Online' : 'Offline'}
               </div>
             </div>
@@ -93,9 +139,9 @@ const Sidebar = () => {
         ))}
 
         {filteredUsers.length === 0 && (
-          <div className="text-center text-gray-500 py-8">
+          <div className="text-center text-gray-500 dark:text-gray-400 py-8">
             <Users className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-            <p>{searchTerm ? 'No users found' : 'No contacts yet'}</p>
+            <p className="dark:text-gray-100">No contacts yet</p>
           </div>
         )}
       </div>

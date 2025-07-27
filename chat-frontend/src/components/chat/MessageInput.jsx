@@ -82,26 +82,26 @@ const MessageInput = () => {
         {/* Image Button */}
         <button
           type="button"
-          className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+          className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
           onClick={() => fileInputRef.current?.click()}
         >
-          <Image className="w-5 h-5 text-gray-600" />
+          <Image className="w-5 h-5 text-gray-600 dark:text-gray-300" />
         </button>
 
         {/* Text Input */}
         <div className="flex-1 relative">
           <input
             type="text"
-            className="input pr-12"
+            className="input pr-12 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-400"
             placeholder="Type a message..."
             value={text}
             onChange={(e) => setText(e.target.value)}
           />
           <button
             type="button"
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 p-1 hover:bg-gray-100 rounded transition-colors"
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
           >
-            <Smile className="w-4 h-4 text-gray-600" />
+            <Smile className="w-4 h-4 text-gray-600 dark:text-gray-300" />
           </button>
         </div>
 

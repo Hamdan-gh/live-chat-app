@@ -14,6 +14,7 @@ export const useChatStore = create((set, get) => ({
   selectedUser: null,
   isUsersLoading: false,
   isMessagesLoading: false,
+  searchResults: [],
 
   // Actions
   getUsers: async () => {
@@ -54,6 +55,19 @@ export const useChatStore = create((set, get) => ({
   },
 
   setSelectedUser: (selectedUser) => set({ selectedUser }),
+
+  searchUsers: async (searchTerm) => {
+    if (!searchTerm) {
+      set({ searchResults: [] });
+      return;
+    }
+    try {
+      const res = await api.get(`/auth/users?search=${encodeURIComponent(searchTerm)}`);
+      set({ searchResults: res.data.users });
+    } catch (error) {
+      set({ searchResults: [] });
+    }
+  },
 
   // Socket.io methods (will be implemented later)
   subscribeToMessages: () => {

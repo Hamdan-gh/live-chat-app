@@ -1,18 +1,21 @@
 import { useChatStore } from '../../Store/useChatStore';
 import { useAuthStore } from '../../Store/useAuthStore';
 import { X, Phone, Video, MoreVertical } from 'lucide-react';
+import { useState } from 'react';
+import ProfileModal from '../profile/ProfileModal';
 
 const ChatHeader = () => {
   const { selectedUser, setSelectedUser } = useChatStore();
   const { onlineUsers } = useAuthStore();
+  const [showProfile, setShowProfile] = useState(false);
 
   return (
     <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
       <div className="flex items-center gap-3">
         {/* Avatar */}
-        <div className="relative">
+        <div className="relative cursor-pointer" onClick={() => setShowProfile(true)}>
           <img
-            src={selectedUser?.profilePic || '/avatar.png'}
+            src={selectedUser?.avatar || '/avatar.png'}
             alt={selectedUser?.username || 'User'}
             className="w-10 h-10 object-cover rounded-full"
           />
@@ -23,8 +26,8 @@ const ChatHeader = () => {
 
         {/* User Info */}
         <div>
-          <h3 className="font-semibold text-gray-900">{selectedUser?.username || 'User'}</h3>
-          <p className="text-sm text-gray-500">
+          <h3 className="font-semibold text-gray-900 dark:text-gray-100">{selectedUser?.username || 'User'}</h3>
+          <p className="text-sm text-gray-500 dark:text-gray-300">
             {selectedUser?._id && onlineUsers.includes(selectedUser._id) ? 'Online' : 'Offline'}
           </p>
         </div>
@@ -48,6 +51,10 @@ const ChatHeader = () => {
           <X className="w-5 h-5 text-gray-600" />
         </button>
       </div>
+      {/* Profile Modal */}
+      {showProfile && (
+        <ProfileModal user={selectedUser} onClose={() => setShowProfile(false)} />
+      )}
     </div>
   );
 };

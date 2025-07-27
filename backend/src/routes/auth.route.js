@@ -4,8 +4,8 @@ import bcrypt from 'bcryptjs';
 import User from '../models/user.model.js';
 import generateJWT from '../utils/generateJWT.js';
 import auth from '../middleware/auth.middleware.js'
-import { checkAuth, signIn, SignOut, signUp } from '../controllers/auth.controllers.js';
-
+import { checkAuth, signIn, SignOut, signUp, getAllUsers } from '../controllers/auth.controllers.js';
+import userModel from '../models/user.model.js';
 
 
 // Create router
@@ -19,7 +19,21 @@ router.get('/sign-out', auth, SignOut);
 
 router.get('/check', auth, checkAuth);
 
+// Get all users except the current user
+router.get('/users', auth, getAllUsers);
 
+// Get another user's profile by ID
+router.get('/users/:id', auth, async (req, res) => {
+  try {
+    const user = await userModel.findById(req.params.id).select('-password');
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+    res.status(200).json({ success: true, user });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Server error', error: error.message });
+  }
+});
 
 // Sign-up route - POST /api/auth/signup
 router.post('/signup', async (req, res) => {

@@ -180,3 +180,27 @@ export const checkAuth = async (req, res) => {
     });
   }
 }
+
+// Get all users except the current user
+export const getAllUsers = async (req, res) => {
+  try {
+    const search = req.query.search || '';
+    const query = {
+      _id: { $ne: req.user._id },
+    };
+    if (search) {
+      query.username = { $regex: search, $options: 'i' };
+    }
+    const users = await userModel.find(query).select('_id username avatar isOnline');
+    res.status(200).json({
+      success: true,
+      users,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Server error fetching users',
+      error: error.message,
+    });
+  }
+};
