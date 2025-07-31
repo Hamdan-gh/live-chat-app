@@ -32,11 +32,11 @@ const SocketStatus = () => {
     setTestResult('Testing...');
     try {
       // Test backend connectivity
-      const response = await fetch('http://localhost:5000/api/health');
+      const response = await fetch('https://live-chat-app-vw20.onrender.com/');
       const healthData = await response.json();
       
       // Test online users endpoint
-      const onlineResponse = await fetch('http://localhost:5000/api/test/online-users');
+      const onlineResponse = await fetch('https://live-chat-app-vw20.onrender.com/');
       const onlineData = await onlineResponse.json();
       
       setTestResult(`Backend: ${healthData.status}\nDatabase: ${healthData.database}\nSocket Connections: ${healthData.socketConnections}\nOnline Users: ${onlineData.totalOnline}`);
