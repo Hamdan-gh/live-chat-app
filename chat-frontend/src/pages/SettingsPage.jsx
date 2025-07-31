@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useAuthStore } from '../Store/useAuthStore';
 import { useThemeStore } from '../Store/useThemeStore';
 import {
@@ -10,13 +10,14 @@ import {
   Sun,
   Users,
   Volume2,
+  ChevronDown,
 } from 'lucide-react';
 
 const SettingsPage = () => {
   const { logout } = useAuthStore();
   const { theme, setTheme, initializeTheme } = useThemeStore();
   const [settings, setSettings] = useState({
-    theme: theme,
+    theme: 'light', // Default value
     notifications: true,
     soundEnabled: true,
     language: 'en',
@@ -24,20 +25,53 @@ const SettingsPage = () => {
     showOnlineStatus: true,
   });
 
+  // Dropdown states
+  const [openDropdown, setOpenDropdown] = useState(null);
+  const dropdownRefs = useRef({});
+
+  // Initialize settings with current theme when theme is available
   useEffect(() => {
-    setSettings((prev) => ({ ...prev, theme }));
+    if (theme) {
+      setSettings((prev) => ({ ...prev, theme }));
+    }
   }, [theme]);
 
   useEffect(() => {
     initializeTheme();
   }, [initializeTheme]);
 
-  const handleSettingChange = (key, value) => {
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (openDropdown && !dropdownRefs.current[openDropdown]?.contains(event.target)) {
+        setOpenDropdown(null);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [openDropdown]);
+
+  // Optimized theme change handler
+  const handleThemeChange = useCallback((newTheme) => {
+    setSettings((prev) => ({ ...prev, theme: newTheme }));
+    setTheme(newTheme);
+    setOpenDropdown(null);
+  }, [setTheme]);
+
+  const handleSettingChange = useCallback((key, value) => {
     setSettings((prev) => ({ ...prev, [key]: value }));
     if (key === 'theme') {
       setTheme(value);
     }
-  };
+    setOpenDropdown(null);
+  }, [setTheme]);
+
+  const toggleDropdown = useCallback((dropdownName) => {
+    setOpenDropdown(openDropdown === dropdownName ? null : dropdownName);
+  }, [openDropdown]);
 
   const SettingItem = ({ icon: Icon, title, description, children }) => (
     <div className="flex items-center justify-between py-4 border-b border-gray-200 dark:border-gray-700 last:border-b-0">
@@ -69,6 +103,58 @@ const SettingsPage = () => {
     </button>
   );
 
+  // Optimized Custom Dropdown Component
+  const CustomDropdown = ({ 
+    value, 
+    onChange, 
+    options, 
+    dropdownName, 
+    placeholder = "Select option" 
+  }) => {
+    const isOpen = openDropdown === dropdownName;
+    const selectedOption = options.find(opt => opt.value === value);
+
+    const handleOptionClick = useCallback((optionValue) => {
+      onChange(optionValue);
+    }, [onChange]);
+
+    return (
+      <div className="relative" ref={el => dropdownRefs.current[dropdownName] = el}>
+        <button
+          type="button"
+          onClick={() => toggleDropdown(dropdownName)}
+          className="flex items-center justify-between w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-400 dark:focus:border-blue-400 min-w-[120px] transition-colors"
+        >
+          <span className="truncate">
+            {selectedOption ? selectedOption.label : placeholder}
+          </span>
+          <ChevronDown 
+            className={`w-4 h-4 ml-2 transition-transform ${isOpen ? 'rotate-180' : ''}`} 
+          />
+        </button>
+        
+        {isOpen && (
+          <div className="absolute z-50 w-full mt-1 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg max-h-60 overflow-auto">
+            {options.map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() => handleOptionClick(option.value)}
+                className={`w-full px-3 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors ${
+                  option.value === value 
+                    ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' 
+                    : 'text-gray-900 dark:text-gray-100'
+                }`}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
       <div className="max-w-2xl mx-auto px-4">
@@ -88,15 +174,17 @@ const SettingsPage = () => {
               title="Theme"
               description="Choose your preferred theme"
             >
-              <select
+              <CustomDropdown
                 value={settings.theme}
-                onChange={(e) => handleSettingChange('theme', e.target.value)}
-                className="input w-32 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-700"
-              >
-                <option value="light">Light</option>
-                <option value="dark">Dark</option>
-                <option value="system">System</option>
-              </select>
+                onChange={handleThemeChange}
+                options={[
+                  { value: 'light', label: 'Light' },
+                  { value: 'dark', label: 'Dark' },
+                  { value: 'system', label: 'System' }
+                ]}
+                dropdownName="theme"
+                placeholder="Select theme"
+              />
             </SettingItem>
 
             <SettingItem
@@ -104,16 +192,18 @@ const SettingsPage = () => {
               title="Language"
               description="Select your preferred language"
             >
-              <select
+              <CustomDropdown
                 value={settings.language}
-                onChange={(e) => handleSettingChange('language', e.target.value)}
-                className="input w-32 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-700"
-              >
-                <option value="en">English</option>
-                <option value="es">Spanish</option>
-                <option value="fr">French</option>
-                <option value="de">German</option>
-              </select>
+                onChange={(value) => handleSettingChange('language', value)}
+                options={[
+                  { value: 'en', label: 'English' },
+                  { value: 'es', label: 'Spanish' },
+                  { value: 'fr', label: 'French' },
+                  { value: 'de', label: 'German' }
+                ]}
+                dropdownName="language"
+                placeholder="Select language"
+              />
             </SettingItem>
           </div>
 
@@ -153,15 +243,17 @@ const SettingsPage = () => {
               title="Privacy Settings"
               description="Who can see your profile"
             >
-              <select
+              <CustomDropdown
                 value={settings.privacy}
-                onChange={(e) => handleSettingChange('privacy', e.target.value)}
-                className="input w-32 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-700"
-              >
-                <option value="everyone">Everyone</option>
-                <option value="friends">Friends Only</option>
-                <option value="nobody">Nobody</option>
-              </select>
+                onChange={(value) => handleSettingChange('privacy', value)}
+                options={[
+                  { value: 'everyone', label: 'Everyone' },
+                  { value: 'friends', label: 'Friends Only' },
+                  { value: 'nobody', label: 'Nobody' }
+                ]}
+                dropdownName="privacy"
+                placeholder="Select privacy"
+              />
             </SettingItem>
 
             <SettingItem
@@ -179,6 +271,35 @@ const SettingsPage = () => {
           {/* Account Actions */}
           <div className="space-y-6">
             <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Account</h2>
+            
+            {/* Theme Test Section */}
+            <SettingItem
+              icon={Sun}
+              title="Theme Test"
+              description="Test theme switching functionality"
+            >
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setTheme('light')}
+                  className="px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600"
+                >
+                  Light
+                </button>
+                <button
+                  onClick={() => setTheme('dark')}
+                  className="px-3 py-1 text-sm bg-gray-500 text-white rounded hover:bg-gray-600"
+                >
+                  Dark
+                </button>
+                <button
+                  onClick={() => setTheme('system')}
+                  className="px-3 py-1 text-sm bg-green-500 text-white rounded hover:bg-green-600"
+                >
+                  System
+                </button>
+              </div>
+            </SettingItem>
+            
             <SettingItem
               icon={Lock}
               title="Sign Out"

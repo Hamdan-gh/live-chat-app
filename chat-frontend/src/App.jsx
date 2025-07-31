@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useAuthStore } from './Store/useAuthStore';
 import { useThemeStore } from './Store/useThemeStore';
+import { useSocket } from './hooks/useSocket';
 import LoginPage from './pages/LoginPage';
 import SignUpPage from './pages/SignUpPage';
 import ProfilePage from './pages/ProfilePage';
@@ -9,11 +10,15 @@ import SettingsPage from './pages/SettingsPage';
 import HomePage from './pages/HomePage';
 import Navbar from './components/layout/Navbar';
 import LoadingSpinner from './components/LoadingSpinner';
+import SocketStatus from './components/chat/SocketStatus';
 import { Toaster } from 'react-hot-toast';
 
 const App = () => {
   const { authUser, isCheckingAuth, checkAuth } = useAuthStore();
   const { initializeTheme } = useThemeStore();
+  
+  // Initialize socket connection for authenticated users
+  const { isConnected } = useSocket();
 
   useEffect(() => {
     checkAuth();
@@ -53,6 +58,7 @@ const App = () => {
           element={authUser ? <HomePage /> : <Navigate to="/login" />}
         />
       </Routes>
+      {authUser && <SocketStatus />}
     </div>
   );
 };

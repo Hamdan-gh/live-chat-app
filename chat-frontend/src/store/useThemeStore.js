@@ -16,7 +16,7 @@ export const useThemeStore = create(
       },
       
       setTheme: (theme) => {
-        set({ theme });
+        // Immediately update the DOM for instant visual feedback
         if (theme === 'system') {
           const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
           if (isDark) {
@@ -29,10 +29,15 @@ export const useThemeStore = create(
         } else {
           document.documentElement.classList.remove('dark');
         }
+        
+        // Update state after DOM change for immediate visual feedback
+        set({ theme });
       },
       
       initializeTheme: () => {
         const theme = get().theme;
+        
+        // Apply theme immediately
         if (theme === 'system') {
           const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
           if (isDark) {
@@ -45,6 +50,7 @@ export const useThemeStore = create(
         } else {
           document.documentElement.classList.remove('dark');
         }
+        
         // Listen for system theme changes if 'system' is selected
         if (!get()._themeListenerAdded) {
           window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {

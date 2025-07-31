@@ -20,6 +20,20 @@ const messageSchema = new mongoose.Schema(
     imageUrl: {
       type: String,
     },
+    audioUrl: {
+      type: String,
+    },
+    isPinned: {
+      type: Boolean,
+      default: false,
+    },
+    pinnedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+    pinnedAt: {
+      type: Date,
+    },
   },
   { timestamps: true }
 );

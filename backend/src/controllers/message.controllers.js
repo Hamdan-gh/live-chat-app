@@ -5,14 +5,14 @@ import userModel from "../models/user.model.js";
 export const sendMessage = async (req, res) => {
   try {
     // Get data from request
-    const { receiverId, text, imageUrl } = req.body;
+    const { receiverId, text, imageUrl, audioUrl } = req.body;
     const senderId = req.user._id; // From auth middleware
     
-    // Validate that we have either text or image
-    if (!text && !imageUrl) {
+    // Validate that we have either text, image, or audio
+    if (!text && !imageUrl && !audioUrl) {
       return res.status(400).json({
         success: false,
-        message: "Message must contain either text or image"
+        message: "Message must contain either text, image, or audio"
       });
     }
     
@@ -38,7 +38,8 @@ export const sendMessage = async (req, res) => {
       senderId,
       receiverId,
       text: text?.trim(),
-      imageUrl
+      imageUrl,
+      audioUrl
     });
     
     // Save message to database
@@ -164,6 +165,166 @@ export const deleteMessage = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Server error deleting message",
+      error: error.message
+    });
+  }
+};
+
+// Pin a message (both sender and receiver can pin)
+export const pinMessage = async (req, res) => {
+  try {
+    const { messageId } = req.params;
+    const userId = req.user._id;
+    
+    // Find the message
+    const message = await messageModel.findById(messageId)
+      .populate("senderId", "username avatar")
+      .populate("receiverId", "username avatar");
+    
+    if (!message) {
+      return res.status(404).json({
+        success: false,
+        message: "Message not found"
+      });
+    }
+    
+    // Check if current user is involved in this message
+    const isInvolved = message.senderId._id.toString() === userId.toString() || 
+                      message.receiverId._id.toString() === userId.toString();
+    
+    if (!isInvolved) {
+      return res.status(403).json({
+        success: false,
+        message: "You can only pin messages from your conversations"
+      });
+    }
+    
+    // Check if message is already pinned
+    if (message.isPinned) {
+      return res.status(400).json({
+        success: false,
+        message: "Message is already pinned"
+      });
+    }
+    
+    // Pin the message
+    const updatedMessage = await messageModel.findByIdAndUpdate(
+      messageId,
+      {
+        isPinned: true,
+        pinnedBy: userId,
+        pinnedAt: new Date()
+      },
+      { new: true }
+    ).populate("senderId", "username avatar")
+     .populate("receiverId", "username avatar")
+     .populate("pinnedBy", "username");
+    
+    res.status(200).json({
+      success: true,
+      message: "Message pinned successfully",
+      data: updatedMessage
+    });
+    
+  } catch (error) {
+    console.error("Pin message error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error pinning message",
+      error: error.message
+    });
+  }
+};
+
+// Unpin a message (only the user who pinned it can unpin)
+export const unpinMessage = async (req, res) => {
+  try {
+    const { messageId } = req.params;
+    const userId = req.user._id;
+    
+    // Find the message
+    const message = await messageModel.findById(messageId);
+    
+    if (!message) {
+      return res.status(404).json({
+        success: false,
+        message: "Message not found"
+      });
+    }
+    
+    // Check if message is pinned
+    if (!message.isPinned) {
+      return res.status(400).json({
+        success: false,
+        message: "Message is not pinned"
+      });
+    }
+    
+    // Check if current user is the one who pinned it
+    if (message.pinnedBy.toString() !== userId.toString()) {
+      return res.status(403).json({
+        success: false,
+        message: "You can only unpin messages that you pinned"
+      });
+    }
+    
+    // Unpin the message
+    const updatedMessage = await messageModel.findByIdAndUpdate(
+      messageId,
+      {
+        isPinned: false,
+        pinnedBy: null,
+        pinnedAt: null
+      },
+      { new: true }
+    ).populate("senderId", "username avatar")
+     .populate("receiverId", "username avatar");
+    
+    res.status(200).json({
+      success: true,
+      message: "Message unpinned successfully",
+      data: updatedMessage
+    });
+    
+  } catch (error) {
+    console.error("Unpin message error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error unpinning message",
+      error: error.message
+    });
+  }
+};
+
+// Get pinned messages for a conversation
+export const getPinnedMessages = async (req, res) => {
+  try {
+    const { userId } = req.params; // The other user's ID
+    const myId = req.user._id;     // Current user's ID
+    
+    // Find pinned messages between these two users
+    const pinnedMessages = await messageModel.find({
+      $or: [
+        { senderId: myId, receiverId: userId },
+        { senderId: userId, receiverId: myId }
+      ],
+      isPinned: true
+    })
+    .populate("senderId", "username avatar")
+    .populate("receiverId", "username avatar")
+    .populate("pinnedBy", "username")
+    .sort({ pinnedAt: -1 }); // Most recently pinned first
+    
+    res.status(200).json({
+      success: true,
+      data: pinnedMessages
+    });
+    
+  } catch (error) {
+    console.error("Get pinned messages error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error retrieving pinned messages",
       error: error.message
     });
   }

@@ -7,7 +7,7 @@ const api = axios.create({
   withCredentials: true,
 });
 
-export const useAuthStore = create((set) => ({
+export const useAuthStore = create((set, get) => ({
   // State
   authUser: null,
   isSigningUp: false,
@@ -58,7 +58,7 @@ export const useAuthStore = create((set) => ({
   logout: async () => {
     try {
       await api.post('/auth/logout');
-      set({ authUser: null });
+      set({ authUser: null, onlineUsers: [] });
       toast.success('Logged out successfully');
     } catch (error) {
       toast.error(error.response?.data?.message || 'Logout failed');
@@ -66,24 +66,29 @@ export const useAuthStore = create((set) => ({
   },
 
   updateProfile: async (data) => {
-  set({ isUpdatingProfile: true });
-  try {
-    console.log("➡️ SENDING TO BACKEND:", data);
+    set({ isUpdatingProfile: true });
+    try {
+      console.log("➡️ SENDING TO BACKEND:", data);
 
-    const res = await api.put('/auth/profile', data);
-    console.log("✅ BACKEND RESPONSE:", res.data);
-    console.log("✅ USER DATA:", res.data.user);
-    
-    // Update the authUser with the returned user data
-    set({ authUser: res.data.user });
-    console.log("✅ AUTH USER UPDATED:", res.data.user);
-    toast.success('Profile updated successfully');
-  } catch (error) {
-    console.error("🛑 BACKEND RESPONSE:", error.response?.data || error);
-    toast.error(error.response?.data?.message || 'Profile update failed');
-  } finally {
-    set({ isUpdatingProfile: false });
-  }
+      const res = await api.put('/auth/profile', data);
+      console.log("✅ BACKEND RESPONSE:", res.data);
+      console.log("✅ USER DATA:", res.data.user);
+      
+      // Update the authUser with the returned user data
+      set({ authUser: res.data.user });
+      console.log("✅ AUTH USER UPDATED:", res.data.user);
+      toast.success('Profile updated successfully');
+    } catch (error) {
+      console.error("🛑 BACKEND RESPONSE:", error.response?.data || error);
+      toast.error(error.response?.data?.message || 'Profile update failed');
+    } finally {
+      set({ isUpdatingProfile: false });
+    }
+  },
+
+  // Update online users list
+  updateOnlineUsers: (onlineUsers) => {
+    set({ onlineUsers });
   },
 
 }));
