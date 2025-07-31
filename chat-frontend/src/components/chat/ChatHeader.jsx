@@ -1,8 +1,8 @@
-import { useChatStore } from '../../Store/useChatStore';
+import { useChatStore } from '../../Store/useChatStore.js';
 import { MoreVertical, Phone, Video } from 'lucide-react';
 import { useState } from 'react';
-import OnlineStatusIndicator from './OnlineStatusIndicator';
-import ProfileModal from '../profile/ProfileModal';
+import OnlineStatusIndicator from './OnlineStatusIndicator.jsx';
+import ProfileModal from '../profile/ProfileModal.jsx';
 
 const ChatHeader = () => {
   const { selectedUser } = useChatStore();

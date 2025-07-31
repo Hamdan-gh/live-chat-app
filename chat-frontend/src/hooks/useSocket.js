@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import { useChatStore } from '../Store/useChatStore';
-import { useAuthStore } from '../Store/useAuthStore';
+import { useChatStore } from '../Store/useChatStore.js';
+import { useAuthStore } from '../Store/useAuthStore.js';
 
 // Helper function to get JWT token from cookies
 const getTokenFromCookies = () => {

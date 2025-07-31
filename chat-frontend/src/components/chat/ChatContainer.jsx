@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
-import { useChatStore } from '../../Store/useChatStore';
-import MessageInput from './MessageInput';
-import Message from './Message';
+import { useChatStore } from '../../Store/useChatStore.js';
+import MessageInput from './MessageInput.jsx';
+import Message from './Message.jsx';
 
 const ChatContainer = ({ selectedUser }) => {
   const {

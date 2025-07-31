@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
-import { useChatStore } from '../../Store/useChatStore';
-import { useAuthStore } from '../../Store/useAuthStore';
+import { useChatStore } from '../../Store/useChatStore.js';
+import { useAuthStore } from '../../Store/useAuthStore.js';
 import { Users, Search } from 'lucide-react';
 
 const Sidebar = () => {

@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { useAuthStore } from '../../Store/useAuthStore';
-import { useChatStore } from '../../Store/useChatStore';
-import AudioPlayer from './AudioPlayer';
-import { formatMessageTime } from '../../lib/utils';
+import { useAuthStore } from '../../Store/useAuthStore.js';
+import { useChatStore } from '../../Store/useChatStore.js';
+import AudioPlayer from './AudioPlayer.jsx';
+import { formatMessageTime } from '../../lib/utils.js';
 import { MoreVertical, Trash2, Pin, PinOff } from 'lucide-react';
 
 const Message = ({ message }) => {

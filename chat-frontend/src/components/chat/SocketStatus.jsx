@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useChatStore } from '../../Store/useChatStore';
-import { useAuthStore } from '../../Store/useAuthStore';
+import { useChatStore } from '../../Store/useChatStore.js';
+import { useAuthStore } from '../../Store/useAuthStore.js';
 import { Wifi, WifiOff, RefreshCw, TestTube } from 'lucide-react';
 
 const SocketStatus = () => {

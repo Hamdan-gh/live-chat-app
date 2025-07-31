@@ -1,16 +1,16 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useEffect } from 'react';
-import { useAuthStore } from './Store/useAuthStore';
-import { useThemeStore } from './Store/useThemeStore';
-import { useSocket } from './hooks/useSocket';
-import LoginPage from './pages/LoginPage';
-import SignUpPage from './pages/SignUpPage';
-import ProfilePage from './pages/ProfilePage';
-import SettingsPage from './pages/SettingsPage';
-import HomePage from './pages/HomePage';
-import Navbar from './components/layout/Navbar';
-import LoadingSpinner from './components/LoadingSpinner';
-import SocketStatus from './components/chat/SocketStatus';
+import { useAuthStore } from './Store/useAuthStore.js';
+import { useThemeStore } from './Store/useThemeStore.js';
+import { useSocket } from './hooks/useSocket.js';
+import LoginPage from './pages/LoginPage.jsx';
+import SignUpPage from './pages/SignUpPage.jsx';
+import ProfilePage from './pages/ProfilePage.jsx';
+import SettingsPage from './pages/SettingsPage.jsx';
+import HomePage from './pages/HomePage.jsx';
+import Navbar from './components/layout/Navbar.jsx';
+import LoadingSpinner from './components/LoadingSpinner.jsx';
+import SocketStatus from './components/chat/SocketStatus.jsx';
 import { Toaster } from 'react-hot-toast';
 
 const App = () => {

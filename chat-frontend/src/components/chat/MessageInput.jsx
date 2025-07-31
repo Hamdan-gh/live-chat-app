@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
-import { useChatStore } from '../../Store/useChatStore';
+import { useChatStore } from '../../Store/useChatStore.js';
 import { Image, Send, Smile, X, Mic, MicOff } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { convertAudioBlobToDataURL, getAudioMimeType, validateAudioBlob, testAudioData, debugAudioCapabilities } from '../../lib/audioUtils';
+import { convertAudioBlobToDataURL, getAudioMimeType, validateAudioBlob, testAudioData, debugAudioCapabilities } from '../../lib/audioUtils.js';
 
 // Emoji data - common emojis
 const emojis = [

@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { useAuthStore } from '../Store/useAuthStore';
+import { useAuthStore } from '../Store/useAuthStore.js';
 import { Eye, EyeOff, Loader2, Lock, Mail, MessageSquare, User } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import AuthSkeleton from '../components/auth/AuthSkeleton';
+import AuthSkeleton from '../components/auth/AuthSkeleton.jsx';
 import toast from 'react-hot-toast';
 
 const SignUpPage = () => {
