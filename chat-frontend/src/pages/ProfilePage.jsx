@@ -1,7 +1,7 @@
 // src/pages/ProfilePage.jsx
 
 import { useState, useEffect } from 'react';
-import { useAuthStore } from '../Store/useAuthStore.js';
+import { useAuthStore } from '../store/useAuthStore.js';
 import { Camera, Mail, User } from 'lucide-react';
 import toast from 'react-hot-toast';
 

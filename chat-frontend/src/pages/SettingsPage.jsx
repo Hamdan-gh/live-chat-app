@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { useAuthStore } from '../Store/useAuthStore.js';
-import { useThemeStore } from '../Store/useThemeStore.js';
+import { useAuthStore } from '../store/useAuthStore.js';
+import { useThemeStore } from '../store/useThemeStore.js';
 import {
   Bell,
   Lock,
