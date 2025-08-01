@@ -29,9 +29,9 @@ const server = createServer(app);
 const io = new Server(server, {
   cors: {
     origin: [
-      'http://localhost:3000',
-      'http://localhost:5173',
-      'http://192.168.1.89:3000'
+      'https://livechat33.netlify.app',
+      'https://live-chat-app-vw20.onrender.com'
+
     ],
     credentials: true
   }
@@ -225,7 +225,7 @@ app.use(cookieParser());
 // ✅ Updated CORS configuration
 const allowedOrigins = [
   'http://localhost:3000',
-  'http://localhost:5173',
+  'https://live-chat-app-vw20.onrender.com',
   'http://192.168.1.89:3000'
 ];
 
