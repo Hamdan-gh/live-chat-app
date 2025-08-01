@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { useChatStore } from '../../Store/useChatStore.js';
+import { useChatStore } from '../../store/useChatStore.js';
 import MessageInput from './MessageInput.jsx';
 import Message from './Message.jsx';
 
