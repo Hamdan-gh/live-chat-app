@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:5000/api', // ✅ no double /api/api issue
+  baseURL: 'https://live-chat-app-vw20.onrender.com/api', // ✅ no double /api/api issue
   withCredentials: true, // optional if you're using cookies/auth
 });
 
