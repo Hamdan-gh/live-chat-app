@@ -1,7 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useEffect } from 'react';
-import { useAuthStore } from './Store/useAuthStore.js';
-import { useThemeStore } from './Store/useThemeStore.js';
+import { useAuthStore } from './store/useAuthStore.js';
+import { useThemeStore } from './store/useThemeStore.js';
 import { useSocket } from './hooks/useSocket.js';
 import LoginPage from './pages/LoginPage.jsx';
 import SignUpPage from './pages/SignUpPage.jsx';
