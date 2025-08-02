@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useAuthStore } from '../../Store/useAuthStore.js';
+import { useAuthStore } from '../../store/useAuthStore.js';
 import { useChatStore } from '../../Store/useChatStore.js';
 import AudioPlayer from './AudioPlayer.jsx';
 import { formatMessageTime } from '../../lib/utils.js';
