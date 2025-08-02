@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAuthStore } from '../../store/useAuthStore.js';
-import { useChatStore } from '../../Store/useChatStore.js';
+import { useChatStore } from '../../store/useChatStore.js';
 import AudioPlayer from './AudioPlayer.jsx';
 import { formatMessageTime } from '../../lib/utils.js';
 import { MoreVertical, Trash2, Pin, PinOff } from 'lucide-react';
