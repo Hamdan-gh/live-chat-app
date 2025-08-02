@@ -30,7 +30,8 @@ const io = new Server(server, {
   cors: {
     origin: [
       'https://livechat33.netlify.app',
-      'https://live-chat-app-vw20.onrender.com'
+      'https://live-chat-app-vw20.onrender.com',
+      'https://live-chat-app-1-k7g0.onrender.com'
 
     ],
     credentials: true
