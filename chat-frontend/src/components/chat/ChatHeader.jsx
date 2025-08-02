@@ -1,4 +1,4 @@
-import { useChatStore } from '../../Store/useChatStore.js';
+import { useChatStore } from '../../store/useChatStore.js';
 import { MoreVertical, Phone, Video } from 'lucide-react';
 import { useState } from 'react';
 import OnlineStatusIndicator from './OnlineStatusIndicator.jsx';
