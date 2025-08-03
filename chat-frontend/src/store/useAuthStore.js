@@ -61,15 +61,20 @@ export const useAuthStore = create((set, get) => ({
     set({ isLoggingIn: true });
     try {
       const res = await api.post('/auth/login', data);
+      console.log('✅ Login Response:', res.data);
       set({ authUser: res.data.user });
       
       // Save the JWT token to localStorage
       if (res.data.token) {
         localStorage.setItem('jwt', res.data.token);
+        console.log('✅ Token saved to localStorage');
+      } else {
+        console.log('❌ No token in login response');
       }
       
       toast.success('Logged in successfully');
     } catch (error) {
+      console.log('❌ Login Error:', error.response?.data);
       toast.error(error.response?.data?.message || 'Login failed');
     } finally {
       set({ isLoggingIn: false });

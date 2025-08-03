@@ -1,12 +1,8 @@
 import { create } from 'zustand';
-import axios from 'axios';
 import toast from 'react-hot-toast';
 import { io } from 'socket.io-client';
-
-const api = axios.create({
-  baseURL: 'https://live-chat-app-vw20.onrender.com/api',
-  withCredentials: true,
-});
+import { useAuthStore } from './useAuthStore';
+import api from '../api.js';
 
 // Create socket instance
 let socket = null;
@@ -150,12 +146,36 @@ export const useChatStore = create((set, get) => ({
   },
 
   // Actions
+  checkAuthStatus: () => {
+    const token = localStorage.getItem('jwt') || localStorage.getItem('token');
+    const authUser = useAuthStore.getState().authUser;
+    
+    console.log('🔍 Auth Status Check:', {
+      hasToken: !!token,
+      hasAuthUser: !!authUser,
+      tokenLength: token ? token.length : 0,
+      authUser: authUser ? { id: authUser.id, username: authUser.username } : null
+    });
+    
+    return { hasToken: !!token, hasAuthUser: !!authUser };
+  },
+
   getUsers: async () => {
     set({ isUsersLoading: true });
     try {
+      // Check if user is authenticated
+      const { hasToken, hasAuthUser } = get().checkAuthStatus();
+      
+      if (!hasToken || !hasAuthUser) {
+        console.log('❌ User not authenticated');
+        toast.error('Please log in to view conversations');
+        return;
+      }
+      
       const res = await api.get('/auth/messages/conversations');
       set({ users: res.data.data });
     } catch (error) {
+      console.log('❌ getUsers Error:', error.response?.data);
       toast.error(error.response?.data?.message || 'Failed to load users');
     } finally {
       set({ isUsersLoading: false });

@@ -12,6 +12,14 @@ api.interceptors.request.use(
     // Get token from localStorage
     const token = localStorage.getItem('jwt') || localStorage.getItem('token');
     
+    console.log('🔍 API Request Debug:', {
+      url: config.url,
+      method: config.method,
+      hasToken: !!token,
+      tokenLength: token ? token.length : 0,
+      tokenPreview: token ? token.substring(0, 20) + '...' : 'No token'
+    });
+    
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -29,7 +37,14 @@ api.interceptors.response.use(
     return response;
   },
   (error) => {
+    console.log('❌ API Error:', {
+      status: error.response?.status,
+      message: error.response?.data?.message,
+      url: error.config?.url
+    });
+    
     if (error.response?.status === 401) {
+      console.log('🚨 401 Unauthorized - Clearing tokens and redirecting to login');
       // Clear invalid tokens
       localStorage.removeItem('jwt');
       localStorage.removeItem('token');
