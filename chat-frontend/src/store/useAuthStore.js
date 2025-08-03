@@ -21,9 +21,18 @@ export const useAuthStore = create((set, get) => ({
     try {
       const res = await api.get('/auth/check');
       set({ authUser: res.data.user });
+      
+      // Save the JWT token to localStorage if it's returned
+      if (res.data.token) {
+        localStorage.setItem('jwt', res.data.token);
+      }
     } catch (error) {
       console.log('Error in checkAuth:', error);
       set({ authUser: null });
+      
+      // Clear any invalid tokens
+      localStorage.removeItem('jwt');
+      localStorage.removeItem('token');
     } finally {
       set({ isCheckingAuth: false });
     }
@@ -34,6 +43,12 @@ export const useAuthStore = create((set, get) => ({
     try {
       const res = await api.post('/auth/signup', data);
       set({ authUser: res.data.user });
+      
+      // Save the JWT token to localStorage
+      if (res.data.token) {
+        localStorage.setItem('jwt', res.data.token);
+      }
+      
       toast.success('Account created successfully');
     } catch (error) {
       toast.error(error.response?.data?.message || 'Signup failed');
@@ -47,6 +62,12 @@ export const useAuthStore = create((set, get) => ({
     try {
       const res = await api.post('/auth/login', data);
       set({ authUser: res.data.user });
+      
+      // Save the JWT token to localStorage
+      if (res.data.token) {
+        localStorage.setItem('jwt', res.data.token);
+      }
+      
       toast.success('Logged in successfully');
     } catch (error) {
       toast.error(error.response?.data?.message || 'Login failed');
@@ -59,6 +80,11 @@ export const useAuthStore = create((set, get) => ({
     try {
       await api.post('/auth/logout');
       set({ authUser: null, onlineUsers: [] });
+      
+      // Clear the JWT token from localStorage
+      localStorage.removeItem('jwt');
+      localStorage.removeItem('token');
+      
       toast.success('Logged out successfully');
     } catch (error) {
       toast.error(error.response?.data?.message || 'Logout failed');
