@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { useChatStore } from '../../Store/useChatStore.js';
+import { useChatStore } from '../../store/useChatStore.js';
 import { Image, Send, Smile, X, Mic, MicOff } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { convertAudioBlobToDataURL, getAudioMimeType, validateAudioBlob, testAudioData, debugAudioCapabilities } from '../../lib/audioUtils.js';

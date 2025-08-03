@@ -4,7 +4,11 @@ import toast from 'react-hot-toast';
 import { io } from 'socket.io-client';
 
 const api = axios.create({
+<<<<<<< HEAD
   baseURL: 'https://live-chat-app-vw20.onrender.com/api',
+=======
+  baseURL: 'https://live-chat-app-vw20.onrender.com',
+>>>>>>> 668309888dd9d928e11d7300969a372fac29a402
   withCredentials: true,
 });
 
@@ -153,7 +157,7 @@ export const useChatStore = create((set, get) => ({
   getUsers: async () => {
     set({ isUsersLoading: true });
     try {
-      const res = await api.get('/auth/messages/conversations');
+      const res = await api.get('/api/auth/messages/conversations');
       set({ users: res.data.data });
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to load users');
@@ -165,7 +169,7 @@ export const useChatStore = create((set, get) => ({
   getMessages: async (userId) => {
     set({ isMessagesLoading: true });
     try {
-      const res = await api.get(`/auth/messages/${userId}`);
+      const res = await api.get(`/api/auth/messages/${userId}`);
       set({ messages: res.data.data.messages });
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to load messages');
@@ -183,7 +187,7 @@ export const useChatStore = create((set, get) => ({
     if (!sentViaSocket) {
       // Fallback to REST API
       try {
-        const res = await api.post('/auth/messages/send', {
+        const res = await api.post('/api/auth/messages/send', {
           text: messageData.text,
           imageUrl: messageData.image,
           audioUrl: messageData.audio,
