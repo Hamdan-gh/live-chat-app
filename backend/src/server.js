@@ -226,6 +226,7 @@ const allowedOrigins = [
   'http://localhost:3000',
   'https://live-chat-app-vw20.onrender.com',
   'http://192.168.1.89:3000'
+  'https://live-chat-app-1-k7g0.onrender.com'
 ];
 
 app.use(cors({
