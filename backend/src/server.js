@@ -256,6 +256,15 @@ mongoose.connect(process.env.MONGODB_URI)
 app.use('/api/auth/messages', messageRouter);
 app.use('/api/auth', authRoutes);
 
+// Redirect old routes to new API structure
+app.get('/auth/check', (req, res) => {
+  res.redirect('/api/auth/check');
+});
+
+app.get('/auth/messages/conversations', (req, res) => {
+  res.redirect('/api/auth/messages/conversations');
+});
+
 app.get('/', (req, res) => {
   res.send('Chat Server is Running and Connected to Database!');
 });
