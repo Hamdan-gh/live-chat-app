@@ -4,11 +4,7 @@ import toast from 'react-hot-toast';
 import { io } from 'socket.io-client';
 
 const api = axios.create({
-<<<<<<< HEAD
   baseURL: 'https://live-chat-app-vw20.onrender.com/api',
-=======
-  baseURL: 'https://live-chat-app-vw20.onrender.com',
->>>>>>> 668309888dd9d928e11d7300969a372fac29a402
   withCredentials: true,
 });
 
