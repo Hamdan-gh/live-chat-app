@@ -4,7 +4,7 @@ import toast from 'react-hot-toast';
 import { io } from 'socket.io-client';
 
 const api = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL: 'https://live-chat-app-vw20.onrender.com',
   withCredentials: true,
 });
 
@@ -29,7 +29,7 @@ export const useChatStore = create((set, get) => ({
       socket.disconnect();
     }
 
-    socket = io('http://localhost:5000', {
+    socket = io('https://live-chat-app-vw20.onrender.com', {
       auth: {
         token: token
       },
