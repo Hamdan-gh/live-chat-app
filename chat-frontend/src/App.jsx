@@ -11,6 +11,7 @@ import HomePage from './pages/HomePage.jsx';
 import Navbar from './components/layout/Navbar.jsx';
 import LoadingSpinner from './components/LoadingSpinner.jsx';
 import SocketStatus from './components/chat/SocketStatus.jsx';
+import AuthDebug from './components/debug/AuthDebug.jsx';
 import { Toaster } from 'react-hot-toast';
 
 const App = () => {
@@ -59,6 +60,7 @@ const App = () => {
         />
       </Routes>
       {authUser && <SocketStatus />}
+      <AuthDebug />
     </div>
   );
 };
