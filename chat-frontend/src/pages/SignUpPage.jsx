@@ -13,22 +13,64 @@ const SignUpPage = () => {
     password: '',
     avatar: '',
   });
+  const [errors, setErrors] = useState({});
 
   const { signup, isSigningUp } = useAuthStore();
 
+  // Real-time validation functions
+  const validateUsername = (username) => {
+    if (!username.trim()) return 'Username is required';
+    if (username.trim().length < 3) return 'Username must be at least 3 characters long';
+    if (username.trim().length > 20) return 'Username must be less than 20 characters';
+    return '';
+  };
+
+  const validateEmail = (email) => {
+    if (!email.trim()) return 'Email is required';
+    if (email.includes(' ')) return 'Email address cannot contain spaces';
+    if (!email.includes('@')) return 'Email address must contain @ symbol';
+    if (!email.includes('.')) return 'Email address must contain a domain (e.g., .com, .org)';
+    
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) return 'Please enter a valid email address (e.g., user@example.com)';
+    
+    return '';
+  };
+
+  const validatePassword = (password) => {
+    if (!password) return 'Password is required';
+    if (password.length < 6) return 'Password must be at least 6 characters long';
+    if (password.length > 50) return 'Password must be less than 50 characters';
+    return '';
+  };
+
   const validateForm = () => {
-    if (!formData.username.trim()) return toast.error('Username is required');
-    if (!formData.email.trim()) return toast.error('Email is required');
-    if (!/S+@S+.S+/.test(formData.email)) return toast.error('Invalid email format');
-    if (!formData.password) return toast.error('Password is required');
-    if (formData.password.length < 6) return toast.error('Password must be at least 6 characters');
+    const usernameError = validateUsername(formData.username);
+    const emailError = validateEmail(formData.email);
+    const passwordError = validatePassword(formData.password);
+
+    if (usernameError) {
+      toast.error(usernameError);
+      return false;
+    }
+    if (emailError) {
+      toast.error(emailError);
+      return false;
+    }
+    if (passwordError) {
+      toast.error(passwordError);
+      return false;
+    }
+    
     return true;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const success = validateForm();
-    if (success === true) await signup(formData);
+    const isValid = validateForm();
+    if (isValid) {
+      await signup(formData);
+    }
   };
 
   return (
