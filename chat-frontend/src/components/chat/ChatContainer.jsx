@@ -39,7 +39,7 @@ const ChatContainer = ({ selectedUser }) => {
   return (
     <div className="flex-1 flex flex-col bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
       {/* Messages Container */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-1 custom-scrollbar bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 max-h-[60vh] relative">
+      <div className="flex-1 overflow-y-auto p-2 sm:p-4 space-y-1 custom-scrollbar bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 max-h-[calc(100vh-8rem)] lg:max-h-[60vh] relative">
         {/* Chat background pattern */}
         <div className="absolute inset-0 opacity-5 pointer-events-none">
           <div className="w-full h-full" style={{
@@ -49,7 +49,7 @@ const ChatContainer = ({ selectedUser }) => {
 
         {/* Welcome message for new chats */}
         {messages.length === 0 && selectedUser && (
-          <div className="flex flex-col items-center justify-center h-full text-center text-gray-500 dark:text-gray-400">
+          <div className="flex flex-col items-center justify-center h-full text-center text-gray-500 dark:text-gray-400 px-4">
             <div className="w-16 h-16 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center mb-4">
               <span className="text-2xl">👋</span>
             </div>
@@ -76,12 +76,12 @@ const ChatContainer = ({ selectedUser }) => {
 // Message skeleton loader
 const MessageSkeleton = () => {
   return (
-    <div className="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+    <div className="flex-1 overflow-y-auto p-2 sm:p-4 space-y-3 custom-scrollbar bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
       {[...Array(6)].map((_, i) => {
         const isOwnMessage = i % 2 === 1;
         return (
           <div key={i} className={`flex ${isOwnMessage ? 'justify-end' : 'justify-start'} mb-3`}>
-            <div className={`flex items-end gap-2 max-w-xs lg:max-w-md xl:max-w-lg ${isOwnMessage ? 'flex-row-reverse' : 'flex-row'}`}>
+            <div className={`flex items-end gap-2 max-w-xs sm:max-w-md lg:max-w-lg ${isOwnMessage ? 'flex-row-reverse' : 'flex-row'}`}>
               {/* Avatar - only show for received messages */}
               {!isOwnMessage && (
                 <div className="flex-shrink-0">

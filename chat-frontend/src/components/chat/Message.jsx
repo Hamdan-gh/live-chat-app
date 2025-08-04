@@ -38,14 +38,14 @@ const Message = ({ message }) => {
       className={`flex ${isOwnMessage ? 'justify-end' : 'justify-start'} mb-3 group relative`}
       onContextMenu={handleContextMenu}
     >
-      <div className={`flex items-end gap-2 max-w-xs lg:max-w-md xl:max-w-lg ${isOwnMessage ? 'flex-row-reverse' : 'flex-row'}`}>
+      <div className={`flex items-end gap-2 max-w-xs sm:max-w-md lg:max-w-lg xl:max-w-xl ${isOwnMessage ? 'flex-row-reverse' : 'flex-row'}`}>
         {/* Avatar - only show for received messages */}
         {!isOwnMessage && (
           <div className="flex-shrink-0">
             <img
               src={message.senderId.avatar || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(message.senderId.username) + '&background=4A90E2&color=fff'}
               alt={message.senderId.username}
-              className="w-8 h-8 rounded-full object-cover border-2 border-gray-200 dark:border-gray-600"
+              className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover border-2 border-gray-200 dark:border-gray-600"
             />
           </div>
         )}
@@ -61,7 +61,7 @@ const Message = ({ message }) => {
 
           {/* Message Bubble */}
           <div
-            className={`relative px-4 py-2 rounded-2xl max-w-full break-words shadow-sm ${
+            className={`relative px-3 py-2 sm:px-4 sm:py-2 rounded-2xl max-w-full break-words shadow-sm ${
               isOwnMessage
                 ? 'bg-blue-500 text-white rounded-br-md'
                 : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-bl-md'
@@ -122,7 +122,7 @@ const Message = ({ message }) => {
             <img
               src={message.senderId.avatar || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(message.senderId.username) + '&background=4A90E2&color=fff'}
               alt={message.senderId.username}
-              className="w-8 h-8 rounded-full object-cover border-2 border-blue-200"
+              className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover border-2 border-blue-200"
             />
           </div>
         )}
@@ -130,7 +130,7 @@ const Message = ({ message }) => {
         {/* Context Menu Button */}
         <button
           onClick={handleContextMenu}
-          className={`opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full ${
+          className={`opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full touch-manipulation ${
             isOwnMessage ? 'order-first' : 'order-last'
           }`}
         >
@@ -145,7 +145,7 @@ const Message = ({ message }) => {
         } top-0 min-w-[120px]`}>
           <button
             onClick={handlePin}
-            className="w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2 text-sm"
+            className="w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2 text-sm touch-manipulation"
           >
             {message.isPinned ? (
               <>
@@ -162,7 +162,7 @@ const Message = ({ message }) => {
           {isOwnMessage && (
             <button
               onClick={handleDelete}
-              className="w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 text-red-600 dark:text-red-400 flex items-center gap-2 text-sm"
+              className="w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 text-red-600 dark:text-red-400 flex items-center gap-2 text-sm touch-manipulation"
             >
               <Trash2 className="w-4 h-4" />
               Delete

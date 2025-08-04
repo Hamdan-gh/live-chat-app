@@ -61,6 +61,18 @@ const MessageInput = () => {
     debugAudioCapabilities();
   }, []);
 
+  // Close emoji picker when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (showEmojiPicker && !event.target.closest('.emoji-picker')) {
+        setShowEmojiPicker(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showEmojiPicker]);
+
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -263,19 +275,19 @@ const MessageInput = () => {
   };
 
   return (
-    <div className="border-t border-gray-200 dark:border-gray-700 p-4 bg-white dark:bg-gray-800">
+    <div className="border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
       {/* Image Preview */}
       {imagePreview && (
-        <div className="mb-3 flex items-center gap-2">
+        <div className="p-3 flex items-center gap-2">
           <div className="relative">
             <img
               src={imagePreview}
               alt="Preview"
-              className="w-20 h-20 object-cover rounded-lg border border-gray-300 dark:border-gray-600"
+              className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-lg border border-gray-300 dark:border-gray-600"
             />
             <button
               onClick={removeImage}
-              className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-gray-500 hover:bg-gray-600 flex items-center justify-center transition-colors"
+              className="absolute -top-1.5 -right-1.5 w-6 h-6 rounded-full bg-gray-500 hover:bg-gray-600 flex items-center justify-center transition-colors"
             >
               <X className="w-3 h-3 text-white" />
             </button>
@@ -286,15 +298,15 @@ const MessageInput = () => {
 
       {/* Audio Preview */}
       {audioBlob && (
-        <div className="mb-3 flex items-center gap-2">
+        <div className="p-3 flex items-center gap-2">
           <div className="relative">
-            <audio controls className="w-64 h-12">
+            <audio controls className="w-48 sm:w-64 h-12">
               <source src={URL.createObjectURL(audioBlob)} type={audioBlob.type} />
               Your browser does not support the audio element.
             </audio>
             <button
               onClick={() => setAudioBlob(null)}
-              className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-gray-500 hover:bg-gray-600 flex items-center justify-center transition-colors"
+              className="absolute -top-1.5 -right-1.5 w-6 h-6 rounded-full bg-gray-500 hover:bg-gray-600 flex items-center justify-center transition-colors"
             >
               <X className="w-3 h-3 text-white" />
             </button>
@@ -305,8 +317,8 @@ const MessageInput = () => {
 
       {/* Emoji Picker */}
       {showEmojiPicker && (
-        <div className="absolute bottom-20 left-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg p-2 max-h-60 overflow-y-auto z-50">
-          <div className="grid grid-cols-8 gap-1">
+        <div className="emoji-picker absolute bottom-20 left-2 sm:left-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg p-2 max-h-60 overflow-y-auto z-50">
+          <div className="grid grid-cols-6 sm:grid-cols-8 gap-1">
             {emojis.map((emoji, index) => (
               <button
                 key={index}
@@ -320,7 +332,7 @@ const MessageInput = () => {
         </div>
       )}
 
-      <form onSubmit={handleSendMessage} className="flex items-center gap-2 p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 relative">
+      <form onSubmit={handleSendMessage} className="flex items-center gap-2 p-2 sm:p-4 bg-white dark:bg-gray-800 relative">
         {/* File Upload */}
         <input
           type="file"
@@ -333,17 +345,17 @@ const MessageInput = () => {
         {/* Image Button */}
         <button
           type="button"
-          className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+          className="p-2 sm:p-3 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors touch-manipulation"
           onClick={() => fileInputRef.current?.click()}
           disabled={isUploading || isRecording}
         >
-          <Image className="w-5 h-5 text-gray-600 dark:text-gray-300" />
+          <Image className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600 dark:text-gray-300" />
         </button>
 
         {/* Voice Recording Button */}
         <button
           type="button"
-          className={`p-2 rounded-lg transition-colors ${
+          className={`p-2 sm:p-3 rounded-lg transition-colors touch-manipulation ${
             isRecording 
               ? 'bg-red-500 hover:bg-red-600 text-white' 
               : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300'
@@ -351,7 +363,7 @@ const MessageInput = () => {
           onClick={isRecording ? stopRecording : startRecording}
           disabled={isUploading}
         >
-          {isRecording ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
+          {isRecording ? <MicOff className="w-5 h-5 sm:w-6 sm:h-6" /> : <Mic className="w-5 h-5 sm:w-6 sm:h-6" />}
         </button>
 
         {/* Recording Timer */}
@@ -362,7 +374,7 @@ const MessageInput = () => {
             <button
               type="button"
               onClick={cancelRecording}
-              className="text-xs bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+              className="text-xs bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 touch-manipulation"
             >
               Cancel
             </button>
@@ -373,7 +385,7 @@ const MessageInput = () => {
         <div className="flex-1 relative">
           <input
             type="text"
-            className="input pr-12 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-400"
+            className="w-full px-3 py-2 sm:py-3 pr-12 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-400 rounded-lg border border-gray-200 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             placeholder="Type a message..."
             value={text}
             onChange={(e) => setText(e.target.value)}
@@ -381,24 +393,24 @@ const MessageInput = () => {
           />
           <button
             type="button"
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors touch-manipulation"
             onClick={() => setShowEmojiPicker(!showEmojiPicker)}
             disabled={isUploading || isRecording}
           >
-            <Smile className="w-4 h-4 text-gray-600 dark:text-gray-300" />
+            <Smile className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600 dark:text-gray-300" />
           </button>
         </div>
 
         {/* Send Button */}
         <button
           type="submit"
-          className="btn btn-primary p-2"
+          className="p-2 sm:p-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation"
           disabled={(!text.trim() && !imagePreview && !audioBlob) || isUploading || isRecording}
         >
           {isUploading ? (
-            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            <div className="w-5 h-5 sm:w-6 sm:h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
           ) : (
-            <Send className="w-5 h-5" />
+            <Send className="w-5 h-5 sm:w-6 sm:h-6" />
           )}
         </button>
       </form>
