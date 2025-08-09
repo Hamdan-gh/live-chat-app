@@ -1,15 +1,17 @@
 import { create } from 'zustand';
-import axios from 'axios';
 import toast from 'react-hot-toast';
-
-const api = axios.create({
-  baseURL: 'https://live-chat-app-vw20.onrender.com/api',
-  withCredentials: true,
-});
+import api from '../api.js';
 
 export const useAuthStore = create((set, get) => ({
   // State
-  authUser: null,
+  authUser: (() => {
+    try {
+      const saved = localStorage.getItem('authUser');
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  })(),
   isSigningUp: false,
   isLoggingIn: false,
   isUpdatingProfile: false,
@@ -21,18 +23,26 @@ export const useAuthStore = create((set, get) => ({
     try {
       const res = await api.get('/auth/check');
       set({ authUser: res.data.user });
+      try { localStorage.setItem('authUser', JSON.stringify(res.data.user)); } catch {}
       
       // Save the JWT token to localStorage if it's returned
       if (res.data.token) {
         localStorage.setItem('jwt', res.data.token);
       }
     } catch (error) {
-      console.log('Error in checkAuth:', error);
-      set({ authUser: null });
-      
-      // Clear any invalid tokens
-      localStorage.removeItem('jwt');
-      localStorage.removeItem('token');
+      const status = error?.response?.status;
+      console.log('Error in checkAuth:', status, error?.response?.data || error?.message);
+      if (status === 401) {
+        set({ authUser: null });
+        // Clear any invalid tokens
+        localStorage.removeItem('jwt');
+        localStorage.removeItem('token');
+        localStorage.removeItem('authUser');
+      } else {
+        // Network/other error: keep existing session and do not clear token
+        const existing = get().authUser;
+        if (existing) set({ authUser: existing });
+      }
     } finally {
       set({ isCheckingAuth: false });
     }
@@ -43,6 +53,7 @@ export const useAuthStore = create((set, get) => ({
     try {
       const res = await api.post('/auth/signup', data);
       set({ authUser: res.data.user });
+      try { localStorage.setItem('authUser', JSON.stringify(res.data.user)); } catch {}
       
       // Save the JWT token to localStorage
       if (res.data.token) {
@@ -63,6 +74,7 @@ export const useAuthStore = create((set, get) => ({
       const res = await api.post('/auth/login', data);
       console.log('✅ Login Response:', res.data);
       set({ authUser: res.data.user });
+      try { localStorage.setItem('authUser', JSON.stringify(res.data.user)); } catch {}
       
       // Save the JWT token to localStorage
       if (res.data.token) {
@@ -89,6 +101,7 @@ export const useAuthStore = create((set, get) => ({
       // Clear the JWT token from localStorage
       localStorage.removeItem('jwt');
       localStorage.removeItem('token');
+      localStorage.removeItem('authUser');
       
       toast.success('Logged out successfully');
     } catch (error) {
@@ -107,6 +120,7 @@ export const useAuthStore = create((set, get) => ({
       
       // Update the authUser with the returned user data
       set({ authUser: res.data.user });
+      try { localStorage.setItem('authUser', JSON.stringify(res.data.user)); } catch {}
       console.log("✅ AUTH USER UPDATED:", res.data.user);
       toast.success('Profile updated successfully');
     } catch (error) {

@@ -43,15 +43,20 @@ api.interceptors.response.use(
       url: error.config?.url
     });
     
+    // Only clear tokens if backend explicitly says token invalid/expired
     if (error.response?.status === 401) {
-      console.log('🚨 401 Unauthorized - Clearing tokens and redirecting to login');
-      // Clear invalid tokens
-      localStorage.removeItem('jwt');
-      localStorage.removeItem('token');
-      
-      // Redirect to login if not already there
-      if (window.location.pathname !== '/login' && window.location.pathname !== '/signup') {
-        window.location.href = '/login';
+      const code = error.response?.data?.code;
+      const shouldClear = code === 'TOKEN_EXPIRED' || code === 'TOKEN_INVALID' || code === 'AUTH_REQUIRED';
+      if (shouldClear) {
+        console.log('🚨 401 with token problem - clearing tokens');
+        localStorage.removeItem('jwt');
+        localStorage.removeItem('token');
+        localStorage.removeItem('authUser');
+        if (window.location.pathname !== '/login' && window.location.pathname !== '/signup') {
+          window.location.href = '/login';
+        }
+      } else {
+        console.log('⚠️ 401 but preserving session (likely CSRF/cookie or transient)');
       }
     }
     return Promise.reject(error);
