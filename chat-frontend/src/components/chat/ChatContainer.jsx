@@ -39,7 +39,7 @@ const ChatContainer = ({ selectedUser }) => {
   return (
     <div className="flex-1 flex flex-col bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
       {/* Messages Container */}
-      <div className="flex-1 overflow-y-auto p-2 sm:p-4 space-y-1 custom-scrollbar bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 max-h-[calc(100vh-8rem)] lg:max-h-[60vh] relative">
+      <div className="flex-1 overflow-y-auto p-2 sm:p-4 pb-24 space-y-1 custom-scrollbar bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 max-h-[calc(100vh-8rem)] lg:max-h-[60vh] relative">
         {/* Chat background pattern */}
         <div className="absolute inset-0 opacity-5 pointer-events-none">
           <div className="w-full h-full" style={{
@@ -68,7 +68,10 @@ const ChatContainer = ({ selectedUser }) => {
         <div ref={messageEndRef} />
       </div>
 
-      <MessageInput />
+      {/* Sticky input on mobile */}
+      <div className="sticky bottom-0 z-20">
+        <MessageInput />
+      </div>
     </div>
   );
 };

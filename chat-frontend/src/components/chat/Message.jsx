@@ -4,11 +4,13 @@ import { useChatStore } from '../../store/useChatStore.js';
 import AudioPlayer from './AudioPlayer.jsx';
 import { formatMessageTime } from '../../lib/utils.js';
 import { MoreVertical, Trash2, Pin, PinOff, Check, CheckCheck } from 'lucide-react';
+import ProfileModal from '../profile/ProfileModal.jsx';
 
 const Message = ({ message }) => {
   const { authUser } = useAuthStore();
   const { deleteMessage, pinMessage, unpinMessage } = useChatStore();
   const [showContextMenu, setShowContextMenu] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
   
   const isOwnMessage = message.senderId._id === authUser?._id;
 
@@ -41,7 +43,7 @@ const Message = ({ message }) => {
       <div className={`flex items-end gap-2 max-w-xs sm:max-w-md lg:max-w-lg xl:max-w-xl ${isOwnMessage ? 'flex-row-reverse' : 'flex-row'}`}>
         {/* Avatar - only show for received messages */}
         {!isOwnMessage && (
-          <div className="flex-shrink-0">
+          <div className="flex-shrink-0 cursor-pointer" onClick={() => setShowProfile(true)}>
             <img
               src={message.senderId.avatar || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(message.senderId.username) + '&background=4A90E2&color=fff'}
               alt={message.senderId.username}
@@ -118,7 +120,7 @@ const Message = ({ message }) => {
 
         {/* Avatar - only show for sent messages */}
         {isOwnMessage && (
-          <div className="flex-shrink-0">
+          <div className="flex-shrink-0 cursor-pointer" onClick={() => setShowProfile(true)}>
             <img
               src={message.senderId.avatar || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(message.senderId.username) + '&background=4A90E2&color=fff'}
               alt={message.senderId.username}
@@ -177,6 +179,11 @@ const Message = ({ message }) => {
           className="fixed inset-0 z-40"
           onClick={() => setShowContextMenu(false)}
         />
+      )}
+
+      {/* Profile Modal */}
+      {showProfile && (
+        <ProfileModal user={message.senderId} onClose={() => setShowProfile(false)} />
       )}
     </div>
   );
